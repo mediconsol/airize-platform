@@ -719,3 +719,214 @@ export const commentService = {
     }
   },
 };
+
+// 통계 관련 함수들
+export const statsService = {
+  // 카테고리별 콘텐츠 통계 조회
+  async getCategoryStats() {
+    try {
+      console.log('📊 카테고리 통계 조회 시작');
+
+      const q = query(
+        collection(db, 'contents'),
+        where('isPublic', '==', true)
+      );
+
+      const snapshot = await getDocs(q);
+      const categoryStats: Record<string, number> = {};
+
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        const type = data.type || 'other';
+        categoryStats[type] = (categoryStats[type] || 0) + 1;
+      });
+
+      console.log('📊 카테고리 통계:', categoryStats);
+      return { success: true, data: categoryStats };
+    } catch (error: any) {
+      console.error('❌ 카테고리 통계 조회 오류:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 태그별 콘텐츠 통계 조회
+  async getTagStats() {
+    try {
+      console.log('🏷️ 태그 통계 조회 시작');
+
+      const q = query(
+        collection(db, 'contents'),
+        where('isPublic', '==', true)
+      );
+
+      const snapshot = await getDocs(q);
+      const tagStats: Record<string, number> = {};
+
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        const tags = data.tags || [];
+        tags.forEach((tag: string) => {
+          tagStats[tag] = (tagStats[tag] || 0) + 1;
+        });
+      });
+
+      // 상위 5개 태그만 반환
+      const sortedTags = Object.entries(tagStats)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 5)
+        .map(([name, count]) => ({
+          name,
+          count,
+          trend: `+${Math.floor(Math.random() * 20 + 5)}%` // 임시 트렌드 데이터
+        }));
+
+      console.log('🏷️ 태그 통계:', sortedTags);
+      return { success: true, data: sortedTags };
+    } catch (error: any) {
+      console.error('❌ 태그 통계 조회 오류:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 전체 플랫폼 통계 조회
+  async getPlatformStats() {
+    try {
+      console.log('📈 플랫폼 통계 조회 시작');
+
+      // 모든 공개 콘텐츠 조회
+      const contentsQuery = query(
+        collection(db, 'contents'),
+        where('isPublic', '==', true)
+      );
+
+      const contentsSnapshot = await getDocs(contentsQuery);
+      const contents = contentsSnapshot.docs.map(doc => doc.data());
+
+      // 기본 통계 계산
+      const totalContents = contents.length;
+      const totalViews = contents.reduce((sum, content) => sum + (content.views || 0), 0);
+      const totalDownloads = contents.reduce((sum, content) => sum + (content.downloads || 0), 0);
+      const totalLikes = contents.reduce((sum, content) => sum + (content.likes || 0), 0);
+
+      // 카테고리별 통계
+      const categoryStats: Record<string, number> = {};
+      contents.forEach(content => {
+        const type = content.type || 'other';
+        categoryStats[type] = (categoryStats[type] || 0) + 1;
+      });
+
+      // AI 도구별 통계
+      const toolStats: Record<string, number> = {};
+      contents.forEach(content => {
+        const tool = content.tool || 'other';
+        toolStats[tool] = (toolStats[tool] || 0) + 1;
+      });
+
+      // 가격 분포 통계
+      const priceRanges = {
+        free: 0,
+        '1-5000': 0,
+        '5001-20000': 0,
+        '20001-50000': 0,
+        '50000+': 0
+      };
+
+      contents.forEach(content => {
+        const price = content.price || 0;
+        if (price === 0) priceRanges.free++;
+        else if (price <= 5000) priceRanges['1-5000']++;
+        else if (price <= 20000) priceRanges['5001-20000']++;
+        else if (price <= 50000) priceRanges['20001-50000']++;
+        else priceRanges['50000+']++;
+      });
+
+      // 최근 7일간 업로드 통계
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const recentContents = contents.filter(content => {
+        const createdAt = content.createdAt?.toDate?.() || new Date(content.createdAt?.seconds * 1000);
+        return createdAt >= sevenDaysAgo;
+      });
+
+      // 인기 콘텐츠 (좋아요 + 다운로드 기준)
+      const popularContents = contents
+        .map(content => ({
+          ...content,
+          popularity: (content.likes || 0) + (content.downloads || 0)
+        }))
+        .sort((a, b) => b.popularity - a.popularity)
+        .slice(0, 5);
+
+      const stats = {
+        overview: {
+          totalContents,
+          totalViews,
+          totalDownloads,
+          totalLikes,
+          recentUploads: recentContents.length
+        },
+        categories: categoryStats,
+        tools: toolStats,
+        priceDistribution: priceRanges,
+        popularContents: popularContents.map(content => ({
+          id: content.id,
+          title: content.title,
+          type: content.type,
+          popularity: content.popularity,
+          views: content.views || 0,
+          downloads: content.downloads || 0,
+          likes: content.likes || 0
+        })),
+        trends: {
+          dailyUploads: this.calculateDailyUploads(contents),
+          growthRate: this.calculateGrowthRate(contents, recentContents)
+        }
+      };
+
+      console.log('📈 플랫폼 통계 완료:', stats);
+      return { success: true, data: stats };
+    } catch (error: any) {
+      console.error('❌ 플랫폼 통계 조회 오류:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  // 일별 업로드 통계 계산
+  calculateDailyUploads(contents: any[]) {
+    const dailyStats: Record<string, number> = {};
+    const last7Days = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      dailyStats[dateStr] = 0;
+      last7Days.push(dateStr);
+    }
+
+    contents.forEach(content => {
+      const createdAt = content.createdAt?.toDate?.() || new Date(content.createdAt?.seconds * 1000);
+      const dateStr = createdAt.toISOString().split('T')[0];
+      if (dailyStats.hasOwnProperty(dateStr)) {
+        dailyStats[dateStr]++;
+      }
+    });
+
+    return last7Days.map(date => ({
+      date,
+      uploads: dailyStats[date]
+    }));
+  },
+
+  // 성장률 계산
+  calculateGrowthRate(allContents: any[], recentContents: any[]) {
+    const totalContents = allContents.length;
+    const recentUploads = recentContents.length;
+
+    if (totalContents === 0) return 0;
+
+    const weeklyGrowthRate = ((recentUploads / totalContents) * 100).toFixed(1);
+    return parseFloat(weeklyGrowthRate);
+  }
+};

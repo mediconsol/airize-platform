@@ -49,6 +49,9 @@ export default function Header() {
                 </Link>
               </>
             )}
+            <Link href="/stats" className="text-muted-foreground hover:text-foreground transition-colors">
+              플랫폼 통계
+            </Link>
             <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
               요금제
             </Link>
@@ -112,6 +115,13 @@ export default function Header() {
                   </Link>
                 </>
               )}
+              <Link
+                href="/stats"
+                className="block text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                플랫폼 통계
+              </Link>
               <Link
                 href="/pricing"
                 className="block text-muted-foreground hover:text-foreground transition-colors"

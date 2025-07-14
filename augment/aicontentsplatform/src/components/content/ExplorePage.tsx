@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchAndFilter from './SearchAndFilter';
 import ContentGrid from './ContentGrid';
+import { statsService } from '@/lib/firestore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -23,44 +24,55 @@ interface SearchFilters {
   tags: string[];
 }
 
-const TRENDING_TAGS = [
-  { name: '디자인', count: 1234, trend: '+15%' },
-  { name: '마케팅', count: 987, trend: '+8%' },
-  { name: '비즈니스', count: 756, trend: '+12%' },
-  { name: '교육', count: 654, trend: '+5%' },
-  { name: '기술', count: 543, trend: '+20%' }
-];
+// 동적 데이터 타입 정의
+interface TrendingTag {
+  name: string;
+  count: number;
+  trend: string;
+}
 
-const FEATURED_CATEGORIES = [
-  {
-    name: 'AI 이미지',
+interface FeaturedCategory {
+  name: string;
+  description: string;
+  icon: React.ReactNode;
+  count: number;
+  color: string;
+  type: string;
+}
+
+// 카테고리 메타데이터 (아이콘과 설명용)
+const CATEGORY_METADATA: Record<string, { description: string; icon: React.ReactNode; color: string }> = {
+  'image': {
     description: 'Midjourney, DALL-E로 생성된 고품질 이미지',
     icon: <Star className="w-6 h-6" />,
-    count: 2341,
     color: 'bg-blue-500'
   },
-  {
-    name: 'PPT 템플릿',
+  'ppt': {
     description: 'ChatGPT로 제작된 전문적인 프레젠테이션',
     icon: <Zap className="w-6 h-6" />,
-    count: 1876,
     color: 'bg-green-500'
   },
-  {
-    name: 'AI 음악',
+  'music': {
     description: 'Suno로 생성된 다양한 장르의 음악',
     icon: <Crown className="w-6 h-6" />,
-    count: 987,
     color: 'bg-purple-500'
   },
-  {
-    name: '코드 스니펫',
+  'code': {
     description: 'GitHub Copilot으로 작성된 유용한 코드',
     icon: <Flame className="w-6 h-6" />,
-    count: 1543,
     color: 'bg-orange-500'
+  },
+  'video': {
+    description: 'AI로 생성된 창의적인 비디오 콘텐츠',
+    icon: <Star className="w-6 h-6" />,
+    color: 'bg-red-500'
+  },
+  'document': {
+    description: '전문적인 문서 및 템플릿',
+    icon: <Zap className="w-6 h-6" />,
+    color: 'bg-indigo-500'
   }
-];
+};
 
 export default function ExplorePage() {
   const [filters, setFilters] = useState<SearchFilters>({
@@ -71,6 +83,93 @@ export default function ExplorePage() {
     sortBy: 'latest',
     tags: []
   });
+
+  // 동적 데이터 상태
+  const [trendingTags, setTrendingTags] = useState<TrendingTag[]>([]);
+  const [featuredCategories, setFeaturedCategories] = useState<FeaturedCategory[]>([]);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  // 통계 데이터 로딩
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        setStatsLoading(true);
+        console.log('📊 통계 데이터 로딩 시작');
+
+        // 카테고리 통계 로딩
+        const categoryResult = await statsService.getCategoryStats();
+        if (categoryResult.success) {
+          const categories: FeaturedCategory[] = Object.entries(categoryResult.data)
+            .map(([type, count]) => {
+              const metadata = CATEGORY_METADATA[type];
+              if (!metadata) return null;
+
+              return {
+                name: type === 'image' ? 'AI 이미지' :
+                      type === 'ppt' ? 'PPT 템플릿' :
+                      type === 'music' ? 'AI 음악' :
+                      type === 'code' ? '코드 스니펫' :
+                      type === 'video' ? 'AI 비디오' :
+                      type === 'document' ? '문서 템플릿' : type,
+                description: metadata.description,
+                icon: metadata.icon,
+                count: count as number,
+                color: metadata.color,
+                type
+              };
+            })
+            .filter(Boolean) as FeaturedCategory[];
+
+          // 카운트 순으로 정렬하고 상위 4개만 표시
+          const sortedCategories = categories
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 4);
+
+          setFeaturedCategories(sortedCategories);
+          console.log('📊 카테고리 데이터 로딩 완료:', sortedCategories);
+        }
+
+        // 태그 통계 로딩
+        const tagResult = await statsService.getTagStats();
+        if (tagResult.success) {
+          setTrendingTags(tagResult.data);
+          console.log('🏷️ 태그 데이터 로딩 완료:', tagResult.data);
+        }
+
+      } catch (error) {
+        console.error('❌ 통계 데이터 로딩 오류:', error);
+
+        // 오류 시 기본 데이터 사용
+        setFeaturedCategories([
+          {
+            name: 'AI 이미지',
+            description: 'Midjourney, DALL-E로 생성된 고품질 이미지',
+            icon: <Star className="w-6 h-6" />,
+            count: 0,
+            color: 'bg-blue-500',
+            type: 'image'
+          },
+          {
+            name: 'PPT 템플릿',
+            description: 'ChatGPT로 제작된 전문적인 프레젠테이션',
+            icon: <Zap className="w-6 h-6" />,
+            count: 0,
+            color: 'bg-green-500',
+            type: 'ppt'
+          }
+        ]);
+
+        setTrendingTags([
+          { name: '디자인', count: 0, trend: '+0%' },
+          { name: '마케팅', count: 0, trend: '+0%' }
+        ]);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    loadStats();
+  }, []);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const handleFiltersChange = (newFilters: SearchFilters) => {
@@ -118,12 +217,19 @@ export default function ExplorePage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {FEATURED_CATEGORIES.map((category, index) => (
+                {statsLoading ? (
+                  <div className="space-y-3">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="h-16 bg-muted rounded-lg"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  featuredCategories.map((category, index) => (
                   <div
                     key={index}
-                    onClick={() => handleCategoryClick(category.name === 'AI 이미지' ? 'image' : 
-                                                     category.name === 'PPT 템플릿' ? 'ppt' :
-                                                     category.name === 'AI 음악' ? 'music' : 'code')}
+                    onClick={() => handleCategoryClick(category.type)}
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
                   >
                     <div className={`w-10 h-10 ${category.color} rounded-lg flex items-center justify-center text-white`}>
@@ -139,7 +245,8 @@ export default function ExplorePage() {
                       </p>
                     </div>
                   </div>
-                ))}
+                  ))
+                )}
               </CardContent>
             </Card>
 
@@ -152,7 +259,16 @@ export default function ExplorePage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {TRENDING_TAGS.map((tag, index) => (
+                {statsLoading ? (
+                  <div className="space-y-3">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="animate-pulse">
+                        <div className="h-10 bg-muted rounded-lg"></div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  trendingTags.map((tag, index) => (
                   <div
                     key={index}
                     onClick={() => handleTagClick(tag.name)}
@@ -173,7 +289,8 @@ export default function ExplorePage() {
                       {tag.trend}
                     </Badge>
                   </div>
-                ))}
+                  ))
+                )}
               </CardContent>
             </Card>
 
