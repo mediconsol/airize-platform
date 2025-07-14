@@ -1,0 +1,57 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // 프로필 이미지 규칙
+    match /profiles/{userId}/{allPaths=**} {
+      // 본인만 업로드 가능, 모든 사용자가 읽기 가능
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 콘텐츠 파일 규칙
+    match /contents/{userId}/{contentId}/{allPaths=**} {
+      // 작성자만 업로드 가능
+      allow write: if request.auth != null && request.auth.uid == userId;
+      
+      // 읽기 권한은 구매 여부에 따라 결정 (실제로는 Cloud Function에서 처리)
+      // 여기서는 기본적으로 읽기 허용 (다운로드 URL 생성 시 토큰으로 제어)
+      allow read: if true;
+    }
+
+    // 썸네일 이미지 규칙
+    match /thumbnails/{userId}/{contentId}/{allPaths=**} {
+      // 작성자만 업로드 가능, 모든 사용자가 읽기 가능
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 임시 파일 규칙 (업로드 중인 파일)
+    match /temp/{userId}/{allPaths=**} {
+      // 본인만 업로드/삭제 가능, 24시간 후 자동 삭제
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 파일 크기 및 타입 제한
+    match /{allPaths=**} {
+      // 파일 크기 제한 (100MB)
+      allow write: if request.resource.size < 100 * 1024 * 1024;
+      
+      // 허용된 파일 타입만 업로드 가능
+      allow write: if request.resource.contentType.matches('image/.*') ||
+                      request.resource.contentType.matches('video/.*') ||
+                      request.resource.contentType.matches('audio/.*') ||
+                      request.resource.contentType.matches('application/pdf') ||
+                      request.resource.contentType.matches('application/vnd.ms-powerpoint') ||
+                      request.resource.contentType.matches('application/vnd.openxmlformats-officedocument.presentationml.presentation') ||
+                      request.resource.contentType.matches('application/vnd.ms-excel') ||
+                      request.resource.contentType.matches('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') ||
+                      request.resource.contentType.matches('application/zip') ||
+                      request.resource.contentType.matches('text/.*');
+    }
+
+    // 기본적으로 모든 다른 접근 거부
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

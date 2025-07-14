@@ -1,0 +1,122 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 사용자 컬렉션 규칙
+    match /users/{userId} {
+      // 본인만 읽기/쓰기 가능, 다른 사용자는 읽기만 가능
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 콘텐츠 컬렉션 규칙
+    match /contents/{contentId} {
+      // 공개 콘텐츠는 모든 사용자가 읽기 가능
+      allow read: if resource.data.isPublic == true || 
+                     (request.auth != null && request.auth.uid == resource.data.creatorId);
+      
+      // 작성자만 생성/수정/삭제 가능
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.creatorId;
+      allow update: if request.auth != null && 
+                       request.auth.uid == resource.data.creatorId;
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.creatorId;
+    }
+
+    // 구매 내역 컬렉션 규칙
+    match /purchases/{purchaseId} {
+      // 구매자만 읽기 가능
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.buyerId;
+      
+      // 시스템에서만 생성 가능 (서버 사이드에서 처리)
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // 댓글 컬렉션 규칙
+    match /comments/{commentId} {
+      // 모든 사용자가 읽기 가능
+      allow read: if true;
+      
+      // 로그인한 사용자만 댓글 작성 가능
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.authorId;
+      
+      // 작성자만 수정/삭제 가능
+      allow update: if request.auth != null && 
+                       request.auth.uid == resource.data.authorId;
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.authorId;
+    }
+
+    // 좋아요 컬렉션 규칙
+    match /likes/{likeId} {
+      // 모든 사용자가 읽기 가능
+      allow read: if true;
+      
+      // 로그인한 사용자만 좋아요 추가/제거 가능
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.userId;
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.userId;
+      
+      // 좋아요는 수정 불가
+      allow update: if false;
+    }
+
+    // 팔로우 컬렉션 규칙
+    match /follows/{followId} {
+      // 모든 사용자가 읽기 가능
+      allow read: if true;
+      
+      // 로그인한 사용자만 팔로우/언팔로우 가능
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.followerId;
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.followerId;
+      
+      // 팔로우는 수정 불가
+      allow update: if false;
+    }
+
+    // 북마크 컬렉션 규칙
+    match /bookmarks/{bookmarkId} {
+      // 본인의 북마크만 읽기 가능
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+      
+      // 로그인한 사용자만 북마크 추가/제거 가능
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.userId;
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.userId;
+      
+      // 북마크는 수정 불가
+      allow update: if false;
+    }
+
+    // 알림 컬렉션 규칙
+    match /notifications/{notificationId} {
+      // 본인의 알림만 읽기 가능
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+      
+      // 알림 읽음 상태만 업데이트 가능
+      allow update: if request.auth != null && 
+                       request.auth.uid == resource.data.userId &&
+                       request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['isRead']);
+      
+      // 알림 생성/삭제는 서버에서만 가능
+      allow create: if false;
+      allow delete: if false;
+    }
+
+    // 기본적으로 모든 다른 접근 거부
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
