@@ -31,18 +31,23 @@ export const useAuth = () => {
         if (userDoc.exists()) {
           setUser(userDoc.data() as User);
         } else {
-          // 새 사용자인 경우 Firestore에 사용자 정보 생성
+          // 새 사용자인 경우 Firestore에 사용자 정보 생성 (주로 소셜 로그인)
+          console.log('🆕 새 사용자 문서 생성:', firebaseUser.uid);
           const newUser: User = {
             uid: firebaseUser.uid,
             name: firebaseUser.displayName || '익명 사용자',
             email: firebaseUser.email || '',
-            profileImage: firebaseUser.photoURL || undefined,
             bio: '',
             roles: ['viewer'],
             createdAt: new Date() as any,
             updatedAt: new Date() as any,
           };
-          
+
+          // profileImage가 있는 경우에만 추가
+          if (firebaseUser.photoURL) {
+            newUser.profileImage = firebaseUser.photoURL;
+          }
+
           await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
           setUser(newUser);
         }
@@ -106,6 +111,24 @@ export const useAuth = () => {
 
       // 프로필 업데이트
       await updateProfile(result.user, { displayName: name });
+
+      // Firestore에 사용자 문서 생성
+      const newUser: User = {
+        uid: result.user.uid,
+        name: name,
+        email: result.user.email || '',
+        bio: '',
+        roles: ['viewer'],
+        createdAt: new Date() as any,
+        updatedAt: new Date() as any,
+      };
+
+      // profileImage가 있는 경우에만 추가 (일반적으로 이메일 회원가입에서는 없음)
+      if (result.user.photoURL) {
+        newUser.profileImage = result.user.photoURL;
+      }
+
+      await setDoc(doc(db, 'users', result.user.uid), newUser);
       console.log('✅ 회원가입 성공:', result.user.uid);
 
       return { success: true, user: result.user };
