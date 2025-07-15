@@ -18,6 +18,7 @@ export interface Content {
   title: string;
   type: 'ppt' | 'excel' | 'image' | 'video' | 'music' | 'code' | 'document' | 'other';
   description: string;
+  aiSummary?: string; // Gemini AI가 생성한 요약
   tool: string; // 'ChatGPT', 'Midjourney', 'Suno', etc.
   previewURL?: string; // 썸네일 또는 미리보기 이미지
   downloadURL: string; // 실제 파일 다운로드 URL

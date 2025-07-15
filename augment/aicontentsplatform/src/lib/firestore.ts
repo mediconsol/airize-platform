@@ -442,6 +442,24 @@ export const contentService = {
     }
   },
 
+  // AI 요약 저장
+  async saveAISummary(contentId: string, aiSummary: string) {
+    try {
+      console.log('💾 AI 요약 저장 시작:', contentId);
+
+      await updateDoc(doc(db, 'contents', contentId), {
+        aiSummary,
+        updatedAt: Timestamp.now(),
+      });
+
+      console.log('✅ AI 요약 저장 완료');
+      return { success: true };
+    } catch (error: any) {
+      console.error('❌ AI 요약 저장 오류:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
   // 조회수 증가
   async incrementViews(contentId: string) {
     try {

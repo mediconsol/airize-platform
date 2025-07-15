@@ -57,7 +57,8 @@ export function AISummary({ content, autoGenerate = false }: AISummaryProps) {
           description: content.description,
           type: content.type,
           tool: content.tool,
-          tags: content.tags || []
+          tags: content.tags || [],
+          contentId: content.id
         }),
       });
 

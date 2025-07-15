@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { geminiService, SummaryRequest } from '@/lib/gemini';
+import { contentService } from '@/lib/firestore';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // 요청 데이터 검증
-    const { title, description, type, tool, tags }: SummaryRequest = body;
+    const { title, description, type, tool, tags, contentId }: SummaryRequest & { contentId?: string } = body;
     
     if (!title || !description) {
       return NextResponse.json(
@@ -39,6 +40,15 @@ export async function POST(request: NextRequest) {
         { success: false, error: summaryResult.error },
         { status: 500 }
       );
+    }
+
+    // Firestore에 AI 요약 저장 (contentId가 있는 경우)
+    if (contentId && summaryResult.summary) {
+      const saveResult = await contentService.saveAISummary(contentId, summaryResult.summary);
+      if (!saveResult.success) {
+        console.warn('⚠️ AI 요약 저장 실패:', saveResult.error);
+        // 저장 실패해도 요약은 반환
+      }
     }
 
     console.log('✅ AI 요약 완료');

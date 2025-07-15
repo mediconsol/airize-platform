@@ -251,10 +251,21 @@ export default function ContentCard({
           </h3>
         </Link>
 
-        {/* 설명 */}
+        {/* AI 요약 또는 설명 */}
         <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-          <SearchHighlight text={content.description} searchQuery={searchQuery} />
+          <SearchHighlight
+            text={content.aiSummary || content.description}
+            searchQuery={searchQuery}
+          />
         </p>
+
+        {/* AI 요약 표시 배지 */}
+        {content.aiSummary && (
+          <div className="flex items-center gap-1 mb-2">
+            <div className="w-1 h-1 bg-primary rounded-full"></div>
+            <span className="text-xs text-primary font-medium">AI 요약</span>
+          </div>
+        )}
 
         {/* 크리에이터 정보 */}
         <div className="flex items-center gap-2 mb-3">
