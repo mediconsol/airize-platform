@@ -19,14 +19,14 @@ interface ContentWithCreator extends Content {
 }
 
 export default function Home() {
-  const [popularContents, setPopularContents] = useState<ContentWithCreator[]>([]);
+  const [latestContents, setLatestContents] = useState<ContentWithCreator[]>([]);
   const [loadingContents, setLoadingContents] = useState(true);
 
-  // 인기 콘텐츠 로드
+  // 최신 콘텐츠 로드
   useEffect(() => {
-    const loadPopularContents = async () => {
+    const loadLatestContents = async () => {
       try {
-        const result = await contentService.getPopularContents(8);
+        const result = await contentService.getLatestContents(8);
         if (result.success) {
           // 크리에이터 정보 추가
           const contentsWithCreators = await Promise.all(
@@ -90,16 +90,16 @@ export default function Home() {
               return content;
             });
 
-          setPopularContents(uniqueContents);
+          setLatestContents(uniqueContents);
         }
       } catch (error) {
-        console.error('인기 콘텐츠 로드 오류:', error);
+        console.error('최신 콘텐츠 로드 오류:', error);
       } finally {
         setLoadingContents(false);
       }
     };
 
-    loadPopularContents();
+    loadLatestContents();
   }, []);
 
   return (
@@ -246,23 +246,23 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 인기 콘텐츠 섹션 - Premium Design */}
+      {/* 최신 콘텐츠 섹션 - Premium Design */}
       <section className="relative py-24 px-4 bg-gradient-to-b from-muted/20 to-background">
         <div className="container mx-auto">
           <div className="text-center mb-20">
-            <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20 text-orange-600 mb-6">
-              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse mr-3" />
-              <span className="font-medium text-sm tracking-wide">TRENDING NOW</span>
+            <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-blue-500/10 to-primary/10 border border-blue-500/20 text-blue-600 mb-6">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse mr-3" />
+              <span className="font-medium text-sm tracking-wide">LATEST CONTENT</span>
             </div>
             <h2 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
-              <span className="text-foreground">트렌딩</span>
+              <span className="text-foreground">최신</span>
               <br />
-              <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">프리미엄 콘텐츠</span>
+              <span className="bg-gradient-to-r from-blue-500 to-primary bg-clip-text text-transparent">AI 콘텐츠</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              전 세계 크리에이터들이 선택한
+              방금 업로드된 따끈따끈한
               <br className="hidden md:block" />
-              <span className="text-primary font-medium">최고 품질의 AI 콘텐츠</span>를 지금 만나보세요
+              <span className="text-primary font-medium">최신 AI 콘텐츠</span>를 가장 먼저 만나보세요
             </p>
           </div>
 
@@ -278,9 +278,9 @@ export default function Home() {
                 </Card>
               ))}
             </div>
-          ) : popularContents.length > 0 ? (
+          ) : latestContents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {popularContents
+              {latestContents
                 .filter(content => content && content.id) // 유효한 콘텐츠만 렌더링
                 .map((content, index) => (
                   <ContentCard
