@@ -252,26 +252,6 @@ export default function ContentDetail({ contentId }: ContentDetailProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* 메인 콘텐츠 */}
           <div className="lg:col-span-2 space-y-6">
-            {/* 미리보기 이미지 */}
-            <Card className="overflow-hidden">
-              <div className="relative aspect-video bg-muted">
-                {content.previewURL ? (
-                  <img
-                    src={content.previewURL}
-                    alt={content.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
-                    {getContentTypeIcon(content.type)}
-                    <span className="ml-3 text-lg text-muted-foreground">
-                      {getContentTypeLabel(content.type)}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </Card>
-
             {/* 콘텐츠 정보 */}
             <Card>
               <CardHeader>
