@@ -180,7 +180,7 @@ export default function ContentCard({
   };
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden p-0">
+    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden p-0 flex flex-col h-full">
       {/* 썸네일 영역 */}
       <Link href={`/content/${content.id}`}>
         <div className="relative aspect-video bg-muted overflow-hidden cursor-pointer rounded-t-lg">
@@ -267,7 +267,7 @@ export default function ContentCard({
         </div>
       </Link>
 
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex-1 flex flex-col">
         {/* 제목 */}
         <Link href={`/content/${content.id}`}>
           <h3 className="font-semibold text-lg mb-2 line-clamp-2 hover:text-primary transition-colors cursor-pointer">
@@ -313,21 +313,23 @@ export default function ContentCard({
           </Badge>
         </div>
 
-        {/* 태그 */}
-        {content.tags && content.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {content.tags.slice(0, 3).map((tag, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
-                #{tag}
-              </Badge>
-            ))}
-            {content.tags.length > 3 && (
-              <Badge variant="secondary" className="text-xs">
-                +{content.tags.length - 3}
-              </Badge>
-            )}
-          </div>
-        )}
+        {/* 태그 - 남은 공간을 차지하되 하단에 정렬 */}
+        <div className="flex-1 flex flex-col justify-end">
+          {content.tags && content.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-0">
+              {content.tags.slice(0, 3).map((tag, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  #{tag}
+                </Badge>
+              ))}
+              {content.tags.length > 3 && (
+                <Badge variant="secondary" className="text-xs">
+                  +{content.tags.length - 3}
+                </Badge>
+              )}
+            </div>
+          )}
+        </div>
       </CardContent>
 
       <CardFooter className="p-0 m-0">

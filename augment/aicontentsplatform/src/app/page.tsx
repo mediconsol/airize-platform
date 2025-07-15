@@ -51,9 +51,10 @@ export default function Home() {
 
           // 중복 제거 및 테스트용 갤러리 데이터 추가
           const uniqueContents = contentsWithCreators
-            .filter((content, index, self) =>
-              index === self.findIndex(c => c.id === content.id)
-            )
+            .filter((content, index, self) => {
+              // ID가 유효하고 중복되지 않는 콘텐츠만 필터링
+              return content.id && index === self.findIndex(c => c.id === content.id);
+            })
             .map((content, index) => {
               // 테스트용으로 일부 콘텐츠에 갤러리 이미지 추가
               if (index === 0 && content.previewURL) {
@@ -279,15 +280,18 @@ export default function Home() {
             </div>
           ) : popularContents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {popularContents.map((content) => (
-                <ContentCard
-                  key={content.id}
-                  content={content}
-                  creatorName={content.creatorName}
-                  creatorImage={content.creatorImage}
-                  isCreator={content.isCreator}
-                />
-              ))}
+              {popularContents
+                .filter(content => content && content.id) // 유효한 콘텐츠만 렌더링
+                .map((content, index) => (
+                  <ContentCard
+                    key={`content-${content.id}-${index}`} // 더 고유한 키 생성
+                    content={content}
+                    creatorName={content.creatorName}
+                    creatorImage={content.creatorImage}
+                    isCreator={content.isCreator}
+                  />
+                ))
+              }
             </div>
           ) : (
             <div className="text-center py-12">

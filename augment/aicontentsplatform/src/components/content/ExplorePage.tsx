@@ -228,7 +228,7 @@ export default function ExplorePage() {
                 ) : (
                   featuredCategories.map((category, index) => (
                   <div
-                    key={index}
+                    key={`category-${category.type}-${index}`}
                     onClick={() => handleCategoryClick(category.type)}
                     className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
                   >
@@ -270,7 +270,7 @@ export default function ExplorePage() {
                 ) : (
                   trendingTags.map((tag, index) => (
                   <div
-                    key={index}
+                    key={`tag-${tag.name}-${index}`}
                     onClick={() => handleTagClick(tag.name)}
                     className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
                   >

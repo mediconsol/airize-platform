@@ -191,6 +191,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
+    align-items: stretch; /* 모든 카드의 높이를 동일하게 맞춤 */
   }
 
   /* Line clamp utilities */
