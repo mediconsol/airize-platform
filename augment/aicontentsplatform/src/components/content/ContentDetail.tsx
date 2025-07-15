@@ -27,6 +27,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AISummary } from '@/components/ai/AISummary';
 import {
   Heart,
   Download,
@@ -283,7 +284,13 @@ export default function ContentDetail({ contentId }: ContentDetailProps) {
                         {content.tool}
                       </Badge>
                     </div>
-                    <CardTitle className="text-2xl mb-2">{content.title}</CardTitle>
+                    <CardTitle className="text-2xl mb-4">{content.title}</CardTitle>
+
+                    {/* AI 요약 섹션 */}
+                    <div className="mb-4">
+                      <AISummary content={content} autoGenerate={true} />
+                    </div>
+
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Eye className="w-4 h-4" />
