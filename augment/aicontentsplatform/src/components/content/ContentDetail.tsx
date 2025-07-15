@@ -64,6 +64,8 @@ export default function ContentDetail({ contentId }: ContentDetailProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [imageLoadingStates, setImageLoadingStates] = useState<Record<string, boolean>>({});
+  const [imageErrorStates, setImageErrorStates] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadContentDetail();
@@ -223,6 +225,20 @@ export default function ContentDetail({ contentId }: ContentDetailProps) {
     return count.toString();
   };
 
+  const handleImageLoad = (imageId: string) => {
+    setImageLoadingStates(prev => ({ ...prev, [imageId]: false }));
+  };
+
+  const handleImageError = (imageId: string) => {
+    setImageLoadingStates(prev => ({ ...prev, [imageId]: false }));
+    setImageErrorStates(prev => ({ ...prev, [imageId]: true }));
+  };
+
+  const handleImageLoadStart = (imageId: string) => {
+    setImageLoadingStates(prev => ({ ...prev, [imageId]: true }));
+    setImageErrorStates(prev => ({ ...prev, [imageId]: false }));
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -319,26 +335,52 @@ export default function ContentDetail({ contentId }: ContentDetailProps) {
 
                 {/* 이미지 갤러리 */}
                 {content.galleryImages && content.galleryImages.length > 0 && (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <h4 className="font-medium text-sm">관련 이미지</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
                       {content.galleryImages.map((image, index) => (
-                        <div key={image.id} className="space-y-2">
-                          <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
-                            <img
-                              src={image.url}
-                              alt={image.caption || `이미지 ${index + 1}`}
-                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
-                              onClick={() => window.open(image.url, '_blank')}
-                            />
-                            <div className="absolute top-2 left-2">
-                              <Badge variant="secondary" className="text-xs">
+                        <div key={image.id} className="space-y-3">
+                          <div className="relative bg-muted rounded-lg overflow-hidden group">
+                            {/* 로딩 상태 */}
+                            {imageLoadingStates[image.id] && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                              </div>
+                            )}
+
+                            {/* 오류 상태 */}
+                            {imageErrorStates[image.id] ? (
+                              <div className="flex items-center justify-center h-48 bg-muted">
+                                <div className="text-center text-muted-foreground">
+                                  <ImageIcon className="w-8 h-8 mx-auto mb-2" />
+                                  <p className="text-sm">이미지를 불러올 수 없습니다</p>
+                                </div>
+                              </div>
+                            ) : (
+                              <img
+                                src={image.url}
+                                alt={image.caption || `이미지 ${index + 1}`}
+                                className="w-full h-auto object-contain hover:scale-[1.02] transition-transform duration-300 cursor-pointer"
+                                onClick={() => window.open(image.url, '_blank')}
+                                onLoadStart={() => handleImageLoadStart(image.id)}
+                                onLoad={() => handleImageLoad(image.id)}
+                                onError={() => handleImageError(image.id)}
+                                style={{
+                                  maxHeight: '600px',
+                                  minHeight: '200px'
+                                }}
+                              />
+                            )}
+
+                            <div className="absolute top-3 left-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                              <Badge variant="secondary" className="text-xs shadow-sm">
                                 {index + 1}
                               </Badge>
                             </div>
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
                           </div>
                           {image.caption && (
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm text-muted-foreground leading-relaxed px-1">
                               {image.caption}
                             </p>
                           )}
