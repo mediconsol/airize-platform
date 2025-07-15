@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Menu, X } from 'lucide-react';
+import { Sparkles, Menu, X, Upload, Search, BarChart3, CreditCard, Plus } from 'lucide-react';
 import Link from 'next/link';
 import AuthModal from '@/components/auth/AuthModal';
 import UserMenu from '@/components/auth/UserMenu';
@@ -24,119 +24,172 @@ export default function Header() {
 
   return (
     <>
-      {/* Navigation */}
-      <nav className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-2xl font-bold gradient-text">AIrize</span>
-            </Link>
-          </div>
-          
-          <div className="hidden md:flex items-center space-x-6">
-            <Link href="/explore" className="text-muted-foreground hover:text-foreground transition-colors">
-              콘텐츠 탐색
-            </Link>
-            {user && (
-              <>
-                <Link href="/upload" className="text-muted-foreground hover:text-foreground transition-colors">
-                  콘텐츠 업로드
-                </Link>
-                <Link href="/my-content" className="text-muted-foreground hover:text-foreground transition-colors">
-                  내 콘텐츠
-                </Link>
-              </>
-            )}
-            <Link href="/stats" className="text-muted-foreground hover:text-foreground transition-colors">
-              플랫폼 통계
-            </Link>
-            <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">
-              요금제
-            </Link>
-          </div>
-          
+      {/* Premium Navigation */}
+      <nav className="border-b border-border/50 bg-background/95 backdrop-blur-xl sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-6 py-5 flex items-center justify-between">
+          {/* Premium Logo */}
           <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-primary/25 transition-all duration-300 group-hover:scale-105">
+                <Sparkles className="w-6 h-6 text-primary-foreground" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold gradient-text tracking-tight">AIrize</span>
+                <span className="text-xs text-muted-foreground font-medium tracking-wider">PREMIUM</span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Premium Navigation Links */}
+          <div className="hidden lg:flex items-center space-x-8">
+            <Link
+              href="/explore"
+              className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-200 font-medium hover:scale-105"
+            >
+              <Search className="w-4 h-4" />
+              <span>콘텐츠 탐색</span>
+            </Link>
+
+            <Link
+              href="/stats"
+              className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-200 font-medium hover:scale-105"
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span>플랫폼 통계</span>
+            </Link>
+
+            <Link
+              href="/pricing"
+              className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-200 font-medium hover:scale-105"
+            >
+              <CreditCard className="w-4 h-4" />
+              <span>요금제</span>
+            </Link>
+
+            {user && (
+              <Link
+                href="/my-content"
+                className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-all duration-200 font-medium hover:scale-105"
+              >
+                <span>내 콘텐츠</span>
+              </Link>
+            )}
+          </div>
+
+          {/* Premium Action Buttons */}
+          <div className="flex items-center space-x-4">
             {user ? (
-              <UserMenu
-                onProfileClick={() => setProfileModalOpen(true)}
-                onSettingsClick={() => {/* 설정 페이지로 이동 */}}
-              />
+              <>
+                {/* Premium Upload Button */}
+                <Link href="/upload">
+                  <Button
+                    size="lg"
+                    className="gradient-bg hidden sm:inline-flex px-6 py-3 rounded-full shadow-lg hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    <span className="font-semibold">콘텐츠 업로드</span>
+                  </Button>
+                </Link>
+
+                {/* User Menu */}
+                <UserMenu
+                  onProfileClick={() => setProfileModalOpen(true)}
+                  onSettingsClick={() => {/* 설정 페이지로 이동 */}}
+                />
+              </>
             ) : (
               <>
-                <PWAInstallButton variant="ghost" className="mr-2 hidden sm:inline-flex" />
-                <Button variant="ghost" onClick={() => handleAuthClick('signin')} className="hidden sm:inline-flex">
+                {/* PWA Install Button */}
+                <PWAInstallButton variant="ghost" className="hidden lg:inline-flex" />
+
+                {/* Auth Buttons */}
+                <Button
+                  variant="ghost"
+                  onClick={() => handleAuthClick('signin')}
+                  className="hidden sm:inline-flex font-medium hover:bg-primary/5 transition-all duration-200"
+                >
                   로그인
                 </Button>
-                <Button className="gradient-bg hidden sm:inline-flex" onClick={() => handleAuthClick('signup')}>
-                  시작하기
+                <Button
+                  className="gradient-bg hidden sm:inline-flex px-6 py-3 rounded-full shadow-lg hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105"
+                  onClick={() => handleAuthClick('signup')}
+                >
+                  <span className="font-semibold">무료로 시작하기</span>
                 </Button>
               </>
             )}
 
-            {/* 모바일 메뉴 버튼 */}
+            {/* Premium Mobile Menu Button */}
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="lg:hidden p-2 hover:bg-primary/5 transition-all duration-200"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
           </div>
         </div>
 
-        {/* 모바일 메뉴 */}
+        {/* Premium Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t bg-background/95 backdrop-blur-sm">
-            <div className="container mx-auto px-4 py-4 space-y-4">
-              <Link
-                href="/explore"
-                className="block text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                콘텐츠 탐색
-              </Link>
-              {user && (
-                <>
-                  <Link
-                    href="/upload"
-                    className="block text-muted-foreground hover:text-foreground transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    콘텐츠 업로드
-                  </Link>
+          <div className="lg:hidden border-t border-border/50 bg-background/98 backdrop-blur-xl shadow-lg">
+            <div className="container mx-auto px-6 py-6 space-y-6">
+              {/* Mobile Navigation Links */}
+              <div className="space-y-4">
+                <Link
+                  href="/explore"
+                  className="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-all duration-200 font-medium p-2 rounded-lg hover:bg-primary/5"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Search className="w-5 h-5" />
+                  <span>콘텐츠 탐색</span>
+                </Link>
+
+                <Link
+                  href="/stats"
+                  className="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-all duration-200 font-medium p-2 rounded-lg hover:bg-primary/5"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <BarChart3 className="w-5 h-5" />
+                  <span>플랫폼 통계</span>
+                </Link>
+
+                <Link
+                  href="/pricing"
+                  className="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-all duration-200 font-medium p-2 rounded-lg hover:bg-primary/5"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <CreditCard className="w-5 h-5" />
+                  <span>요금제</span>
+                </Link>
+
+                {user && (
                   <Link
                     href="/my-content"
-                    className="block text-muted-foreground hover:text-foreground transition-colors"
+                    className="flex items-center space-x-3 text-muted-foreground hover:text-foreground transition-all duration-200 font-medium p-2 rounded-lg hover:bg-primary/5"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    내 콘텐츠
+                    <span>내 콘텐츠</span>
                   </Link>
-                </>
-              )}
-              <Link
-                href="/stats"
-                className="block text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                플랫폼 통계
-              </Link>
-              <Link
-                href="/pricing"
-                className="block text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                요금제
-              </Link>
+                )}
+              </div>
 
-              {!user && (
-                <div className="pt-4 border-t space-y-2">
+              {/* Mobile Action Buttons */}
+              {user ? (
+                <div className="pt-4 border-t border-border/50">
+                  <Link href="/upload" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="gradient-bg w-full py-4 rounded-full shadow-lg">
+                      <Plus className="w-5 h-5 mr-2" />
+                      <span className="font-semibold">콘텐츠 업로드</span>
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="pt-4 border-t border-border/50 space-y-3">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start"
+                    className="w-full justify-center py-4 font-medium hover:bg-primary/5 transition-all duration-200"
                     onClick={() => {
                       handleAuthClick('signin');
                       setMobileMenuOpen(false);
@@ -145,13 +198,13 @@ export default function Header() {
                     로그인
                   </Button>
                   <Button
-                    className="gradient-bg w-full"
+                    className="gradient-bg w-full py-4 rounded-full shadow-lg"
                     onClick={() => {
                       handleAuthClick('signup');
                       setMobileMenuOpen(false);
                     }}
                   >
-                    시작하기
+                    <span className="font-semibold">무료로 시작하기</span>
                   </Button>
                 </div>
               )}
