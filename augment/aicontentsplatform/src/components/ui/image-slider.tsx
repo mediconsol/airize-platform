@@ -99,9 +99,9 @@ export default function ImageSlider({
 
           {/* 인디케이터 점들 */}
           <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            {images.map((_, index) => (
+            {images.map((image, index) => (
               <button
-                key={index}
+                key={`${image}-${index}`}
                 className={`w-2 h-2 rounded-full transition-all duration-200 ${
                   index === currentIndex
                     ? 'bg-white shadow-lg'

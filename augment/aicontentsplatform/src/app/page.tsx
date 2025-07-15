@@ -48,7 +48,48 @@ export default function Home() {
               }
             })
           );
-          setPopularContents(contentsWithCreators);
+
+          // 중복 제거 및 테스트용 갤러리 데이터 추가
+          const uniqueContents = contentsWithCreators
+            .filter((content, index, self) =>
+              index === self.findIndex(c => c.id === content.id)
+            )
+            .map((content, index) => {
+              // 테스트용으로 일부 콘텐츠에 갤러리 이미지 추가
+              if (index === 0 && content.previewURL) {
+                return {
+                  ...content,
+                  galleryURLs: [
+                    'https://picsum.photos/800/600?random=1',
+                    'https://picsum.photos/800/600?random=2',
+                    'https://picsum.photos/800/600?random=3'
+                  ]
+                };
+              }
+              if (index === 1 && content.previewURL) {
+                return {
+                  ...content,
+                  galleryURLs: [
+                    'https://picsum.photos/800/600?random=4',
+                    'https://picsum.photos/800/600?random=5'
+                  ]
+                };
+              }
+              if (index === 2 && content.previewURL) {
+                return {
+                  ...content,
+                  galleryURLs: [
+                    'https://picsum.photos/800/600?random=6',
+                    'https://picsum.photos/800/600?random=7',
+                    'https://picsum.photos/800/600?random=8',
+                    'https://picsum.photos/800/600?random=9'
+                  ]
+                };
+              }
+              return content;
+            });
+
+          setPopularContents(uniqueContents);
         }
       } catch (error) {
         console.error('인기 콘텐츠 로드 오류:', error);
