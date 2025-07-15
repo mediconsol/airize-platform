@@ -56,10 +56,16 @@ export default function Home() {
               return content.id && index === self.findIndex(c => c.id === content.id);
             })
             .map((content, index) => {
-              // 테스트용으로 일부 콘텐츠에 갤러리 이미지 추가
-              if (index === 0 && content.previewURL) {
+              // 테스트용으로 모든 콘텐츠에 갤러리 이미지 추가 (previewURL 조건 제거)
+              const baseContent = {
+                ...content,
+                // previewURL이 없으면 기본 이미지 추가
+                previewURL: content.previewURL || `https://picsum.photos/800/600?random=${index + 100}`
+              };
+
+              if (index === 0) {
                 return {
-                  ...content,
+                  ...baseContent,
                   galleryURLs: [
                     'https://picsum.photos/800/600?random=1',
                     'https://picsum.photos/800/600?random=2',
@@ -67,18 +73,18 @@ export default function Home() {
                   ]
                 };
               }
-              if (index === 1 && content.previewURL) {
+              if (index === 1) {
                 return {
-                  ...content,
+                  ...baseContent,
                   galleryURLs: [
                     'https://picsum.photos/800/600?random=4',
                     'https://picsum.photos/800/600?random=5'
                   ]
                 };
               }
-              if (index === 2 && content.previewURL) {
+              if (index === 2) {
                 return {
-                  ...content,
+                  ...baseContent,
                   galleryURLs: [
                     'https://picsum.photos/800/600?random=6',
                     'https://picsum.photos/800/600?random=7',
@@ -87,8 +93,26 @@ export default function Home() {
                   ]
                 };
               }
-              return content;
+              if (index === 3) {
+                return {
+                  ...baseContent,
+                  galleryURLs: [
+                    'https://picsum.photos/800/600?random=10',
+                    'https://picsum.photos/800/600?random=11'
+                  ]
+                };
+              }
+              return baseContent;
             });
+
+          // 갤러리 데이터 디버깅
+          console.log('🖼️ 갤러리 데이터 확인:', uniqueContents.map(c => ({
+            id: c.id,
+            title: c.title,
+            hasPreview: !!c.previewURL,
+            galleryCount: c.galleryURLs?.length || 0,
+            galleryURLs: c.galleryURLs
+          })));
 
           setLatestContents(uniqueContents);
         }
