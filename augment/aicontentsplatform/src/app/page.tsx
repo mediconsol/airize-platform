@@ -106,7 +106,7 @@ export default function Home() {
             });
 
           // 갤러리 데이터 디버깅
-          console.log('🖼️ 실제 갤러리 데이터 확인:', contentsWithGallery.map(c => ({
+          console.log('🖼️ 실제 갤러리 데이터 확인:', uniqueContents.map(c => ({
             id: c.id,
             title: c.title,
             type: c.type,
@@ -118,7 +118,7 @@ export default function Home() {
             galleryURLs: c.galleryURLs
           })));
 
-          setLatestContents(contentsWithGallery);
+          setLatestContents(uniqueContents);
         }
       } catch (error) {
         console.error('최신 콘텐츠 로드 오류:', error);

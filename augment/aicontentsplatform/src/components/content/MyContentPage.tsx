@@ -70,10 +70,36 @@ export default function MyContentPage() {
       const result = await contentService.getUserContents(user.uid);
       
       if (result.success) {
-        setContents(result.data);
-        
+        // 실제 갤러리 이미지 처리
+        const contentsWithGallery = result.data.map((content) => {
+          // 실제 갤러리 이미지가 있는 경우 사용
+          if (content.galleryImages && content.galleryImages.length > 0) {
+            // galleryImages에서 URL만 추출하여 galleryURLs로 변환
+            const galleryURLs = content.galleryImages
+              .filter(img => img.url && !img.url.startsWith('blob:')) // 유효한 URL만 필터링
+              .map(img => img.url);
+
+            if (galleryURLs.length > 0) {
+              return {
+                ...content,
+                galleryURLs: galleryURLs
+              };
+            }
+          }
+
+          // 기존 galleryURLs가 있는 경우 그대로 사용
+          if (content.galleryURLs && content.galleryURLs.length > 0) {
+            return content;
+          }
+
+          // 갤러리 이미지가 없는 경우 기본 콘텐츠 반환
+          return content;
+        });
+
+        setContents(contentsWithGallery);
+
         // 통계 계산
-        const totalStats = result.data.reduce((acc, content) => ({
+        const totalStats = contentsWithGallery.reduce((acc, content) => ({
           totalContents: acc.totalContents + 1,
           totalViews: acc.totalViews + content.views,
           totalDownloads: acc.totalDownloads + content.downloads,
