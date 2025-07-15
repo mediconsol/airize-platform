@@ -8,6 +8,7 @@ import Link from 'next/link';
 import AuthModal from '@/components/auth/AuthModal';
 import UserMenu from '@/components/auth/UserMenu';
 import ProfileModal from '@/components/auth/ProfileModal';
+import { PWAInstallButton } from '@/components/ui/pwa-install-button';
 
 export default function Header() {
   const { user } = useAuth();
@@ -65,6 +66,7 @@ export default function Header() {
               />
             ) : (
               <>
+                <PWAInstallButton variant="ghost" className="mr-2 hidden sm:inline-flex" />
                 <Button variant="ghost" onClick={() => handleAuthClick('signin')} className="hidden sm:inline-flex">
                   로그인
                 </Button>
