@@ -61,96 +61,142 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
 
-      {/* Hero Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
+      {/* Hero Section - Premium Design */}
+      <section className="relative py-24 px-4 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl opacity-20" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl opacity-30" />
+
+        <div className="container mx-auto text-center relative z-10">
           <div className="animate-fade-in">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
-              <Sparkles className="w-4 h-4 mr-2" />
-              AI 기반 콘텐츠 마켓플레이스
+            {/* Premium Badge */}
+            <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 text-primary mb-8 backdrop-blur-sm">
+              <Sparkles className="w-5 h-5 mr-3" />
+              <span className="font-medium text-sm tracking-wide">PREMIUM AI CONTENT MARKETPLACE</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              AI 콘텐츠를 만들고
-              <br />
-              <span className="gradient-text">공유하고 수익화하세요</span>
+
+            {/* Main Headline */}
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-[0.9] tracking-tight">
+              <span className="block text-foreground">AI 콘텐츠의</span>
+              <span className="block gradient-text">새로운 차원</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              AI로 생성된 콘텐츠를 위한 프리미엄 마켓플레이스입니다.
-              당신의 창작물을 업로드하고, 놀라운 작품들을 발견하며, AI 크리에이터 커뮤니티와 연결하세요.
+
+            {/* Subtitle */}
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+              전문가급 AI 콘텐츠를 창작하고, 글로벌 마켓플레이스에서 수익화하세요.
+              <br className="hidden md:block" />
+              <span className="text-primary font-medium">차세대 크리에이터</span>를 위한 프리미엄 플랫폼입니다.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <Link href="/upload">
-                <Button size="lg" className="gradient-bg text-lg px-8 py-6">
-                  창작 시작하기
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                <Button size="lg" className="gradient-bg text-lg px-10 py-7 rounded-full shadow-2xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105">
+                  <span className="font-semibold">창작 시작하기</span>
+                  <ArrowRight className="ml-3 w-5 h-5" />
                 </Button>
               </Link>
               <Link href="/explore">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-                  콘텐츠 둘러보기
+                <Button size="lg" variant="outline" className="text-lg px-10 py-7 rounded-full border-2 hover:bg-primary/5 transition-all duration-300">
+                  <span className="font-medium">프리미엄 콘텐츠 탐색</span>
                 </Button>
               </Link>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <span>10,000+ 활성 크리에이터</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                <span>50,000+ 프리미엄 콘텐츠</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+                <span>99.9% 업타임 보장</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-muted/30">
+      {/* Features Section - Premium Design */}
+      <section className="relative py-24 px-4 bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">왜 AIrize를 선택해야 할까요?</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              크리에이터를 위해, 크리에이터가 만든 플랫폼. 콘텐츠 창작의 미래를 경험하세요.
+          <div className="text-center mb-20">
+            <div className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+              PREMIUM FEATURES
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+              <span className="text-foreground">차별화된</span>
+              <br />
+              <span className="gradient-text">프리미엄 경험</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              전문가급 도구와 엔터프라이즈 수준의 인프라로
+              <br className="hidden md:block" />
+              <span className="text-primary font-medium">차세대 AI 콘텐츠 창작</span>을 경험하세요.
             </p>
           </div>
-          <div className="content-grid">
-            <Card className="premium-card animate-slide-up">
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-primary" />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Card className="group premium-card animate-slide-up hover:scale-105 transition-all duration-500 border-0 shadow-xl">
+              <CardHeader className="pb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Zap className="w-8 h-8 text-primary" />
                 </div>
-                <CardTitle>빠른 속도</CardTitle>
-                <CardDescription>
-                  최적화된 플랫폼으로 AI 콘텐츠를 몇 초 만에 업로드하고 공유하세요.
+                <CardTitle className="text-xl font-bold mb-3">Lightning Fast</CardTitle>
+                <CardDescription className="text-base leading-relaxed">
+                  최첨단 CDN과 AI 최적화 엔진으로
+                  <span className="text-primary font-medium">초고속 업로드</span>와
+                  실시간 처리를 제공합니다.
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="premium-card animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Shield className="w-6 h-6 text-primary" />
+            <Card className="group premium-card animate-slide-up hover:scale-105 transition-all duration-500 border-0 shadow-xl" style={{ animationDelay: '0.1s' }}>
+              <CardHeader className="pb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Shield className="w-8 h-8 text-primary" />
                 </div>
-                <CardTitle>안전한 보호</CardTitle>
-                <CardDescription>
-                  엔터프라이즈급 보안과 블록체인 검증으로 당신의 콘텐츠를 안전하게 보호합니다.
+                <CardTitle className="text-xl font-bold mb-3">Enterprise Security</CardTitle>
+                <CardDescription className="text-base leading-relaxed">
+                  <span className="text-primary font-medium">군사급 암호화</span>와
+                  블록체인 검증으로 당신의 지적재산을
+                  완벽하게 보호합니다.
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="premium-card animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Users className="w-6 h-6 text-primary" />
+            <Card className="group premium-card animate-slide-up hover:scale-105 transition-all duration-500 border-0 shadow-xl" style={{ animationDelay: '0.2s' }}>
+              <CardHeader className="pb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Users className="w-8 h-8 text-primary" />
                 </div>
-                <CardTitle>글로벌 커뮤니티</CardTitle>
-                <CardDescription>
-                  전 세계 수천 명의 AI 크리에이터들과 연결하고 트렌딩 콘텐츠를 발견하세요.
+                <CardTitle className="text-xl font-bold mb-3">Global Network</CardTitle>
+                <CardDescription className="text-base leading-relaxed">
+                  전 세계 <span className="text-primary font-medium">50개국 크리에이터</span>들과
+                  연결하고 글로벌 마켓에서
+                  수익을 창출하세요.
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="premium-card animate-slide-up" style={{ animationDelay: '0.3s' }}>
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Sparkles className="w-6 h-6 text-primary" />
+            <Card className="group premium-card animate-slide-up hover:scale-105 transition-all duration-500 border-0 shadow-xl" style={{ animationDelay: '0.3s' }}>
+              <CardHeader className="pb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Sparkles className="w-8 h-8 text-primary" />
                 </div>
-                <CardTitle>유연한 요금제</CardTitle>
-                <CardDescription>
-                  무료부터 엔터프라이즈까지, 성장 단계에 맞는 최적의 플랜을 선택하세요.
+                <CardTitle className="text-xl font-bold mb-3">Smart Monetization</CardTitle>
+                <CardDescription className="text-base leading-relaxed">
+                  AI 기반 <span className="text-primary font-medium">수익 최적화</span> 알고리즘으로
+                  콘텐츠 가치를 극대화하고
+                  안정적인 수입을 보장합니다.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -158,13 +204,23 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 인기 콘텐츠 섹션 */}
-      <section className="py-20 px-4">
+      {/* 인기 콘텐츠 섹션 - Premium Design */}
+      <section className="relative py-24 px-4 bg-gradient-to-b from-muted/20 to-background">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">🔥 인기 콘텐츠</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              지금 가장 인기 있는 AI 콘텐츠를 확인해보세요
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20 text-orange-600 mb-6">
+              <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse mr-3" />
+              <span className="font-medium text-sm tracking-wide">TRENDING NOW</span>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+              <span className="text-foreground">트렌딩</span>
+              <br />
+              <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">프리미엄 콘텐츠</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              전 세계 크리에이터들이 선택한
+              <br className="hidden md:block" />
+              <span className="text-primary font-medium">최고 품질의 AI 콘텐츠</span>를 지금 만나보세요
             </p>
           </div>
 
@@ -212,39 +268,70 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Firebase Test Section - 개발용 */}
-      <section className="py-20 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">🔥 Firebase 연결 테스트</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              개발 중인 Firebase 연결 상태를 확인해보세요.
-            </p>
-          </div>
-          <FirebaseTest />
-        </div>
-      </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl font-bold mb-6">AI 여정을 시작할 준비가 되셨나요?</h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              이미 AIrize에서 AI 콘텐츠로 수익을 창출하고 있는 수천 명의 크리에이터들과 함께하세요.
+
+      {/* CTA Section - Premium Design */}
+      <section className="relative py-24 px-4 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-primary/15 rounded-full blur-3xl opacity-40" />
+
+        <div className="container mx-auto text-center relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 text-primary mb-8">
+              <Sparkles className="w-5 h-5 mr-3" />
+              <span className="font-medium text-sm tracking-wide">JOIN THE REVOLUTION</span>
+            </div>
+
+            <h2 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight leading-[0.9]">
+              <span className="text-foreground">당신의 AI 여정,</span>
+              <br />
+              <span className="gradient-text">지금 시작하세요</span>
+            </h2>
+
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+              이미 <span className="text-primary font-semibold">10,000명 이상의 크리에이터</span>가
+              AIrize에서 AI 콘텐츠로 수익을 창출하고 있습니다.
+              <br className="hidden md:block" />
+              <span className="text-foreground font-medium">당신도 그 일원이 되어보세요.</span>
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
               <Link href="/upload">
-                <Button size="lg" className="gradient-bg text-lg px-8 py-6">
-                  지금 AIrize 시작하기
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                <Button size="lg" className="gradient-bg text-lg px-12 py-8 rounded-full shadow-2xl hover:shadow-primary/30 transition-all duration-300 transform hover:scale-105">
+                  <span className="font-bold">무료로 시작하기</span>
+                  <ArrowRight className="ml-3 w-6 h-6" />
                 </Button>
               </Link>
               <Link href="/pricing">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-                  요금제 보기
+                <Button size="lg" variant="outline" className="text-lg px-12 py-8 rounded-full border-2 hover:bg-primary/5 transition-all duration-300">
+                  <span className="font-semibold">프리미엄 플랜 보기</span>
                 </Button>
               </Link>
+            </div>
+
+            {/* Social Proof */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <div className="flex -space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/70 rounded-full border-2 border-background" />
+                  <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-400 rounded-full border-2 border-background" />
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full border-2 border-background" />
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-400 rounded-full border-2 border-background flex items-center justify-center text-xs font-bold text-white">
+                    +
+                  </div>
+                </div>
+                <span className="font-medium">10,000+ 활성 크리에이터</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex text-yellow-500">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i} className="text-lg">★</span>
+                  ))}
+                </div>
+                <span className="font-medium">4.9/5 평점 (2,500+ 리뷰)</span>
+              </div>
             </div>
           </div>
         </div>
