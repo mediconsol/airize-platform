@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import RichTextEditor from '@/components/ui/rich-text-editor';
 import ImageGallery from '@/components/ui/image-gallery';
+import { DescriptionAssistant } from '@/components/ai/DescriptionAssistant';
 import {
   Tag,
   DollarSign,
@@ -339,6 +340,15 @@ export default function ContentMetadataForm({ onSubmit, loading = false }: Conte
               {formData.title.length}/100
             </p>
           </div>
+
+          {/* AI 작성 도우미 */}
+          <DescriptionAssistant
+            title={formData.title}
+            type={formData.type}
+            tool={formData.tool}
+            tags={formData.tags}
+            onDescriptionGenerated={(description) => handleInputChange('description', description)}
+          />
 
           {/* 설명 */}
           <RichTextEditor

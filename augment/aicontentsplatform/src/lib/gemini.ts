@@ -28,6 +28,20 @@ export interface SummaryResponse {
   error?: string;
 }
 
+export interface DescriptionEnhanceRequest {
+  title: string;
+  rawDescription: string;
+  type: string;
+  tool: string;
+  tags?: string[];
+}
+
+export interface DescriptionEnhanceResponse {
+  success: boolean;
+  enhancedDescription?: string;
+  error?: string;
+}
+
 export const geminiService = {
   // 콘텐츠 설명을 요약하는 함수
   async summarizeContent(content: SummaryRequest): Promise<SummaryResponse> {
@@ -98,6 +112,62 @@ ${content.description}
     }
     
     return results;
+  },
+
+  // 상세설명 정리 및 마크다운 변환
+  async enhanceDescription(request: DescriptionEnhanceRequest): Promise<DescriptionEnhanceResponse> {
+    try {
+      console.log('✨ Gemini 상세설명 정리 시작:', request.title);
+
+      // 프롬프트 구성
+      const prompt = `
+다음 AI 콘텐츠의 상세설명을 정리하고 마크다운 형식으로 구조화해주세요.
+
+제목: ${request.title}
+콘텐츠 유형: ${request.type}
+사용된 AI 도구: ${request.tool}
+태그: ${request.tags?.join(', ') || '없음'}
+
+작성자가 입력한 원본 설명:
+${request.rawDescription}
+
+정리 및 구조화 가이드라인:
+1. 마크다운 형식으로 구조화하여 가독성 향상
+2. 제목과 소제목을 적절히 사용 (##, ###)
+3. 주요 특징은 불릿 포인트(-)로 정리
+4. 중요한 내용은 **굵게** 강조
+5. 코드나 기술적 내용은 \`백틱\`으로 표시
+6. 단계별 설명이 있다면 번호 목록(1. 2. 3.)으로 정리
+7. 원본 내용의 핵심을 유지하면서 더 체계적으로 구성
+8. 한국어로 작성하되 전문적이고 명확한 톤 유지
+9. 마케팅적 과장 없이 실용적인 정보 중심
+10. 사용자가 이해하기 쉽도록 논리적 순서로 배치
+
+구조화된 마크다운 설명:`;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const enhancedDescription = response.text().trim();
+
+      if (!enhancedDescription) {
+        throw new Error('정리된 설명이 비어있습니다.');
+      }
+
+      console.log('✅ Gemini 상세설명 정리 완료:', enhancedDescription.substring(0, 100) + '...');
+
+      return {
+        success: true,
+        enhancedDescription
+      };
+
+    } catch (error: any) {
+      console.error('❌ Gemini 상세설명 정리 오류:', error);
+
+      return {
+        success: false,
+        error: error.message || '상세설명 정리 중 오류가 발생했습니다.'
+      };
+    }
   },
 
   // API 키 유효성 검사
