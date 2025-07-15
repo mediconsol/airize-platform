@@ -114,21 +114,45 @@ export default function ContentGrid({ filters, viewMode }: ContentGridProps) {
 
         console.log('📊 로드된 콘텐츠 수:', newContents.length);
 
-        // 크리에이터 정보 가져오기
+        // 크리에이터 정보 가져오기 및 테스트용 갤러리 데이터 추가
         const contentsWithCreators = await Promise.all(
-          newContents.map(async (content) => {
+          newContents.map(async (content, index) => {
             try {
               const userDoc = await getDoc(doc(db, 'users', content.creatorId));
+              let contentWithCreator = content;
+
               if (userDoc.exists()) {
                 const userData = userDoc.data() as User;
-                return {
+                contentWithCreator = {
                   ...content,
                   creatorName: userData.name,
                   creatorImage: userData.profileImage,
                   isCreator: userData.roles.includes('creator')
                 };
               }
-              return content;
+
+              // 테스트용으로 일부 콘텐츠에 갤러리 이미지 추가 (explore 페이지용)
+              if (index === 0 && contentWithCreator.previewURL) {
+                return {
+                  ...contentWithCreator,
+                  galleryURLs: [
+                    'https://picsum.photos/800/600?random=10',
+                    'https://picsum.photos/800/600?random=11',
+                    'https://picsum.photos/800/600?random=12'
+                  ]
+                };
+              }
+              if (index === 1 && contentWithCreator.previewURL) {
+                return {
+                  ...contentWithCreator,
+                  galleryURLs: [
+                    'https://picsum.photos/800/600?random=13',
+                    'https://picsum.photos/800/600?random=14'
+                  ]
+                };
+              }
+
+              return contentWithCreator;
             } catch (error) {
               console.error('크리에이터 정보 로드 오류:', error);
               return content;
@@ -137,7 +161,12 @@ export default function ContentGrid({ filters, viewMode }: ContentGridProps) {
         );
 
         if (isLoadMore) {
-          setContents(prev => [...prev, ...contentsWithCreators]);
+          // 더보기 시 중복 제거
+          setContents(prev => {
+            const existingIds = new Set(prev.map(c => c.id));
+            const newUniqueContents = contentsWithCreators.filter(c => !existingIds.has(c.id));
+            return [...prev, ...newUniqueContents];
+          });
         } else {
           setContents(contentsWithCreators);
         }
@@ -316,21 +345,24 @@ export default function ContentGrid({ filters, viewMode }: ContentGridProps) {
       </div>
 
       {/* 콘텐츠 그리드/리스트 */}
-      <div className={viewMode === 'grid' 
+      <div className={viewMode === 'grid'
         ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         : "space-y-4"
       }>
-        {contents.map((content) => (
-          <ContentCard
-            key={content.id}
-            content={content}
-            creatorName={content.creatorName}
-            creatorImage={content.creatorImage}
-            isCreator={content.isCreator}
-            onLike={handleLike}
-            searchQuery={filters.query}
-          />
-        ))}
+        {contents
+          .filter(content => content && content.id) // 유효한 콘텐츠만 렌더링
+          .map((content, index) => (
+            <ContentCard
+              key={`explore-content-${content.id}-${index}`} // 더 고유한 키 생성
+              content={content}
+              creatorName={content.creatorName}
+              creatorImage={content.creatorImage}
+              isCreator={content.isCreator}
+              onLike={handleLike}
+              searchQuery={filters.query}
+            />
+          ))
+        }
       </div>
 
       {/* 더 보기 버튼 */}
