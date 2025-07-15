@@ -131,24 +131,27 @@ export default function ContentGrid({ filters, viewMode }: ContentGridProps) {
                 };
               }
 
-              // 테스트용으로 일부 콘텐츠에 갤러리 이미지 추가 (explore 페이지용)
-              if (index === 0 && contentWithCreator.previewURL) {
-                return {
-                  ...contentWithCreator,
-                  galleryURLs: [
-                    'https://picsum.photos/800/600?random=10',
-                    'https://picsum.photos/800/600?random=11',
-                    'https://picsum.photos/800/600?random=12'
-                  ]
-                };
+              // 실제 콘텐츠의 갤러리 이미지 사용 (explore 페이지용)
+              // 실제 갤러리 이미지가 있는 경우 사용
+              if (contentWithCreator.galleryImages && contentWithCreator.galleryImages.length > 0) {
+                // galleryImages에서 URL만 추출하여 galleryURLs로 변환
+                const galleryURLs = contentWithCreator.galleryImages
+                  .filter(img => img.url && !img.url.startsWith('blob:')) // 유효한 URL만 필터링
+                  .map(img => img.url);
+
+                if (galleryURLs.length > 0) {
+                  return {
+                    ...contentWithCreator,
+                    galleryURLs: galleryURLs
+                  };
+                }
               }
-              if (index === 1 && contentWithCreator.previewURL) {
+
+              // 기존 galleryURLs가 있는 경우 그대로 사용
+              if (contentWithCreator.galleryURLs && contentWithCreator.galleryURLs.length > 0) {
                 return {
                   ...contentWithCreator,
-                  galleryURLs: [
-                    'https://picsum.photos/800/600?random=13',
-                    'https://picsum.photos/800/600?random=14'
-                  ]
+                  galleryURLs: contentWithCreator.galleryURLs
                 };
               }
 

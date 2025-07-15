@@ -12,6 +12,21 @@ import { Content, User } from "@/types/firebase";
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
+// 타입별 기본 이미지 반환 함수
+const getDefaultImageByType = (type: string) => {
+  const typeImages = {
+    'ppt': 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=600&fit=crop',
+    'excel': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
+    'image': 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=800&h=600&fit=crop',
+    'video': 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=600&fit=crop',
+    'music': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=600&fit=crop',
+    'code': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
+    'document': 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=600&fit=crop',
+    'other': 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop'
+  };
+  return typeImages[type as keyof typeof typeImages] || typeImages.other;
+};
+
 interface ContentWithCreator extends Content {
   creatorName?: string;
   creatorImage?: string;
@@ -56,65 +71,54 @@ export default function Home() {
               return content.id && index === self.findIndex(c => c.id === content.id);
             })
             .map((content, index) => {
-              // 테스트용으로 모든 콘텐츠에 갤러리 이미지 추가 (previewURL 조건 제거)
+              // 실제 콘텐츠의 갤러리 이미지 사용
               const baseContent = {
                 ...content,
-                // previewURL이 없으면 기본 이미지 추가
-                previewURL: content.previewURL || `https://picsum.photos/800/600?random=${index + 100}`
+                // previewURL이 없으면 타입별 기본 이미지 사용
+                previewURL: content.previewURL || getDefaultImageByType(content.type)
               };
 
-              if (index === 0) {
+              // 실제 갤러리 이미지가 있는 경우 사용
+              if (content.galleryImages && content.galleryImages.length > 0) {
+                // galleryImages에서 URL만 추출하여 galleryURLs로 변환
+                const galleryURLs = content.galleryImages
+                  .filter(img => img.url && !img.url.startsWith('blob:')) // 유효한 URL만 필터링
+                  .map(img => img.url);
+
+                if (galleryURLs.length > 0) {
+                  return {
+                    ...baseContent,
+                    galleryURLs: galleryURLs
+                  };
+                }
+              }
+
+              // 기존 galleryURLs가 있는 경우 그대로 사용
+              if (content.galleryURLs && content.galleryURLs.length > 0) {
                 return {
                   ...baseContent,
-                  galleryURLs: [
-                    'https://picsum.photos/800/600?random=1',
-                    'https://picsum.photos/800/600?random=2',
-                    'https://picsum.photos/800/600?random=3'
-                  ]
+                  galleryURLs: content.galleryURLs
                 };
               }
-              if (index === 1) {
-                return {
-                  ...baseContent,
-                  galleryURLs: [
-                    'https://picsum.photos/800/600?random=4',
-                    'https://picsum.photos/800/600?random=5'
-                  ]
-                };
-              }
-              if (index === 2) {
-                return {
-                  ...baseContent,
-                  galleryURLs: [
-                    'https://picsum.photos/800/600?random=6',
-                    'https://picsum.photos/800/600?random=7',
-                    'https://picsum.photos/800/600?random=8',
-                    'https://picsum.photos/800/600?random=9'
-                  ]
-                };
-              }
-              if (index === 3) {
-                return {
-                  ...baseContent,
-                  galleryURLs: [
-                    'https://picsum.photos/800/600?random=10',
-                    'https://picsum.photos/800/600?random=11'
-                  ]
-                };
-              }
+
+              // 갤러리 이미지가 없는 경우 기본 콘텐츠 반환
               return baseContent;
             });
 
           // 갤러리 데이터 디버깅
-          console.log('🖼️ 갤러리 데이터 확인:', uniqueContents.map(c => ({
+          console.log('🖼️ 실제 갤러리 데이터 확인:', contentsWithGallery.map(c => ({
             id: c.id,
             title: c.title,
+            type: c.type,
             hasPreview: !!c.previewURL,
-            galleryCount: c.galleryURLs?.length || 0,
+            hasGalleryImages: !!(c.galleryImages && c.galleryImages.length > 0),
+            galleryImagesCount: c.galleryImages?.length || 0,
+            hasGalleryURLs: !!(c.galleryURLs && c.galleryURLs.length > 0),
+            galleryURLsCount: c.galleryURLs?.length || 0,
             galleryURLs: c.galleryURLs
           })));
 
-          setLatestContents(uniqueContents);
+          setLatestContents(contentsWithGallery);
         }
       } catch (error) {
         console.error('최신 콘텐츠 로드 오류:', error);
