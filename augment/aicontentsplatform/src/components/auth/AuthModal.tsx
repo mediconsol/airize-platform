@@ -14,7 +14,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Mail, Lock, User, Github } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2, Mail, Lock, User, Github, AlertCircle } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 
 interface AuthModalProps {
@@ -26,6 +27,7 @@ interface AuthModalProps {
 export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }: AuthModalProps) {
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -45,17 +47,19 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }: Au
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       const result = await signInWithEmail(formData.email, formData.password);
       if (result.success) {
         onClose();
         setFormData({ email: '', password: '', name: '', confirmPassword: '' });
+        setError(null);
       } else {
-        alert('로그인 실패: ' + result.error);
+        setError(result.error || '로그인에 실패했습니다.');
       }
     } catch (error) {
-      alert('로그인 중 오류가 발생했습니다.');
+      setError('로그인 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -63,14 +67,20 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }: Au
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError(null);
+
     if (formData.password !== formData.confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.');
+      setError('비밀번호가 일치하지 않습니다.');
       return;
     }
 
     if (formData.password.length < 6) {
-      alert('비밀번호는 6자 이상이어야 합니다.');
+      setError('비밀번호는 6자 이상이어야 합니다.');
+      return;
+    }
+
+    if (!formData.name.trim()) {
+      setError('이름을 입력해주세요.');
       return;
     }
 
@@ -81,9 +91,9 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }: Au
       if (result.success) {
         onClose();
         setFormData({ email: '', password: '', name: '', confirmPassword: '' });
-        alert('회원가입이 완료되었습니다!');
+        setError(null);
       } else {
-        alert('회원가입 실패: ' + result.error);
+        setError(result.error || '회원가입에 실패했습니다.');
       }
     } catch (error) {
       alert('회원가입 중 오류가 발생했습니다.');
@@ -94,15 +104,17 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }: Au
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
+    setError(null);
     try {
       const result = await signInWithGoogle();
       if (result.success) {
         onClose();
+        setError(null);
       } else {
-        alert('Google 로그인 실패: ' + result.error);
+        setError(result.error || 'Google 로그인에 실패했습니다.');
       }
     } catch (error) {
-      alert('Google 로그인 중 오류가 발생했습니다.');
+      setError('Google 로그인 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -110,15 +122,17 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }: Au
 
   const handleGithubSignIn = async () => {
     setLoading(true);
+    setError(null);
     try {
       const result = await signInWithGithub();
       if (result.success) {
         onClose();
+        setError(null);
       } else {
-        alert('GitHub 로그인 실패: ' + result.error);
+        setError(result.error || 'GitHub 로그인에 실패했습니다.');
       }
     } catch (error) {
-      alert('GitHub 로그인 중 오류가 발생했습니다.');
+      setError('GitHub 로그인 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -143,6 +157,12 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }: Au
           </TabsList>
 
           <TabsContent value="signin" className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <form onSubmit={handleEmailSignIn} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="signin-email">이메일</Label>
@@ -188,6 +208,12 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'signin' }: Au
           </TabsContent>
 
           <TabsContent value="signup" className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <form onSubmit={handleEmailSignUp} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="signup-name">이름</Label>
