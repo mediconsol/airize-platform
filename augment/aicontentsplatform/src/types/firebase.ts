@@ -24,6 +24,7 @@ export interface Content {
   downloadURL: string; // 실제 파일 다운로드 URL
   demoURL?: string; // 관련 데모사이트 URL
   youtubeURL?: string; // 관련 YouTube 링크
+  galleryURLs?: string[]; // 갤러리 이미지 URL 배열 (슬라이더용)
   galleryImages?: Array<{
     id: string;
     url: string;

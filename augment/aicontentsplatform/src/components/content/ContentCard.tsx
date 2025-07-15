@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import SearchHighlight from '@/components/ui/SearchHighlight';
+import ImageSlider from '@/components/ui/image-slider';
 import { 
   Heart, 
   Download, 
@@ -184,11 +185,19 @@ export default function ContentCard({
       <Link href={`/content/${content.id}`}>
         <div className="relative aspect-video bg-muted overflow-hidden cursor-pointer rounded-t-lg">
         {content.previewURL ? (
-          <img
-            src={content.previewURL}
-            alt={content.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-lg"
-          />
+          // 갤러리 이미지가 있으면 슬라이더 사용, 없으면 단일 이미지 표시
+          content.galleryURLs && content.galleryURLs.length > 0 ? (
+            <ImageSlider
+              images={[content.previewURL, ...content.galleryURLs]}
+              alt={content.title}
+            />
+          ) : (
+            <img
+              src={content.previewURL}
+              alt={content.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-t-lg"
+            />
+          )
         ) : (
           <div className={`w-full h-full flex flex-col items-center justify-center bg-gradient-to-br ${getContentTypeTheme(content.type).gradient} relative overflow-hidden rounded-t-lg`}>
             {/* 배경 패턴 */}
@@ -219,13 +228,15 @@ export default function ContentCard({
             </div>
           </div>
         )}
-        
-        {/* 오버레이 정보 */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-        
+
+        {/* 오버레이 정보 - 슬라이더가 자체 오버레이를 가지므로 슬라이더가 없을 때만 표시 */}
+        {!(content.previewURL && content.galleryURLs && content.galleryURLs.length > 0) && (
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+        )}
+
         {/* 가격 배지 */}
-        <div className="absolute top-3 right-3">
-          <Badge 
+        <div className="absolute top-3 right-3 z-10">
+          <Badge
             variant={content.price === 0 ? "secondary" : "default"}
             className="bg-white/90 text-black hover:bg-white"
           >
@@ -234,12 +245,25 @@ export default function ContentCard({
         </div>
 
         {/* 콘텐츠 타입 배지 */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 z-10">
           <Badge variant="outline" className="bg-white/90 text-black border-white/50">
             {getContentTypeIcon(content.type)}
             <span className="ml-1">{getContentTypeLabel(content.type)}</span>
           </Badge>
         </div>
+
+        {/* 갤러리 이미지 표시기 */}
+        {content.galleryURLs && content.galleryURLs.length > 0 && content.previewURL && (
+          <div className="absolute bottom-3 left-3 z-10 bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <span className="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                <rect width="18" height="14" x="3" y="3" rx="2" />
+                <path d="M3 7h18" />
+              </svg>
+              {content.galleryURLs.length + 1} 이미지
+            </span>
+          </div>
+        )}
         </div>
       </Link>
 
