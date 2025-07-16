@@ -106,6 +106,20 @@ export default function EditContentModal({
     }
   }, [isOpen, content]);
 
+  // 모달 열림/닫힘 시 body 스크롤 제어
+  useEffect(() => {
+    if (isOpen) {
+      // 모달이 열릴 때 body 스크롤 차단
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+
+      return () => {
+        // 모달이 닫힐 때 원래 스크롤 상태 복원
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [isOpen]);
+
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,

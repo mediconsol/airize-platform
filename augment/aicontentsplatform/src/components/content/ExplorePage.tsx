@@ -200,8 +200,7 @@ export default function ExplorePage() {
             <h1 className="text-3xl font-bold">콘텐츠 탐색</h1>
           </div>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            AI로 생성된 다양한 콘텐츠를 발견하고 다운로드하세요. 
-            전 세계 크리에이터들의 창작물을 만나보세요.
+            AI로 생성된 다양한 콘텐츠를 발견하고 다운로드하세요.
           </p>
         </div>
 

@@ -142,7 +142,6 @@ export default function PricingPage() {
           </div>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
             AI 콘텐츠 크리에이터의 성장 단계에 맞는 최적의 플랜을 선택하세요. 
-            언제든지 업그레이드하거나 다운그레이드할 수 있습니다.
           </p>
 
           {/* 연간/월간 토글 */}

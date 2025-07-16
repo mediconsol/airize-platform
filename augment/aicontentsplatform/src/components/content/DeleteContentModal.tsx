@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Content } from '@/types/firebase';
 import { contentService } from '@/lib/firestore';
 import {
@@ -40,6 +40,20 @@ export default function DeleteContentModal({
 
   const expectedText = '삭제';
   const isConfirmed = confirmText === expectedText;
+
+  // 모달 열림/닫힘 시 body 스크롤 제어
+  useEffect(() => {
+    if (isOpen) {
+      // 모달이 열릴 때 body 스크롤 차단
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+
+      return () => {
+        // 모달이 닫힐 때 원래 스크롤 상태 복원
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [isOpen]);
 
   const handleDelete = async () => {
     if (!isConfirmed) return;
