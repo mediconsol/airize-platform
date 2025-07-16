@@ -92,11 +92,13 @@ export default function UserMenu({ onProfileClick, onSettingsClick }: UserMenuPr
           <User className="mr-2 h-4 w-4" />
           <span>프로필</span>
         </DropdownMenuItem>
-        
-        <DropdownMenuItem onClick={onSettingsClick} className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
-          <span>설정</span>
-        </DropdownMenuItem>
+
+        <Link href="/settings">
+          <DropdownMenuItem className="cursor-pointer">
+            <Settings className="mr-2 h-4 w-4" />
+            <span>설정</span>
+          </DropdownMenuItem>
+        </Link>
         
         <DropdownMenuSeparator />
         

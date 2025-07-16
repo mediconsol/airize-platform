@@ -94,7 +94,7 @@ export default function Header() {
                 {/* User Menu */}
                 <UserMenu
                   onProfileClick={() => setProfileModalOpen(true)}
-                  onSettingsClick={() => {/* 설정 페이지로 이동 */}}
+                  onSettingsClick={() => window.location.href = '/settings'}
                 />
               </>
             ) : (
