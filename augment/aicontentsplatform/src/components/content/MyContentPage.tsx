@@ -374,12 +374,12 @@ export default function MyContentPage() {
                         />
                         
                         {/* 관리 버튼 오버레이 */}
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <div className="flex gap-1">
                             <Button
                               size="sm"
                               variant="secondary"
-                              className="h-8 w-8 p-0"
+                              className="h-8 w-8 p-0 bg-white/90 hover:bg-white shadow-md"
                               onClick={() => setEditingContent(content)}
                               title="편집"
                             >
@@ -388,7 +388,7 @@ export default function MyContentPage() {
                             <Button
                               size="sm"
                               variant="destructive"
-                              className="h-8 w-8 p-0"
+                              className="h-8 w-8 p-0 bg-red-500/90 hover:bg-red-500 shadow-md"
                               onClick={() => setDeletingContent(content)}
                               title="삭제"
                             >
