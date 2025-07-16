@@ -106,6 +106,10 @@ export default function PricingPage() {
   const { user } = useAuth();
   const [isYearly, setIsYearly] = useState(false);
 
+  const handleUpgradeClick = () => {
+    alert('준비중입니다.');
+  };
+
   const formatPrice = (price: number) => {
     if (price === 0) return '무료';
     return `₩${price.toLocaleString()}`;
@@ -242,11 +246,11 @@ export default function PricingPage() {
                         </Link>
                       )
                     ) : key === 'enterprise' ? (
-                      <Button variant={plan.buttonVariant} className="w-full">
+                      <Button variant={plan.buttonVariant} className="w-full" onClick={handleUpgradeClick}>
                         문의하기
                       </Button>
                     ) : (
-                      <Button variant={plan.buttonVariant} className="w-full">
+                      <Button variant={plan.buttonVariant} className="w-full" onClick={handleUpgradeClick}>
                         {user ? '업그레이드' : '시작하기'}
                       </Button>
                     )}

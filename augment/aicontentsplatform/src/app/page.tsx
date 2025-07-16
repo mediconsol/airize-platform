@@ -156,7 +156,7 @@ export default function Home() {
 
             {/* Subtitle */}
             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-light">
-              전문가급 AI 콘텐츠를 창작하고, 글로벌 마켓플레이스에서 수익화하세요.
+              전문가급 AI 콘텐츠를 창작하고 수익화하세요.
               <br className="hidden md:block" />
               <span className="text-primary font-medium">차세대 크리에이터</span>를 위한 프리미엄 플랫폼입니다.
             </p>
@@ -250,7 +250,7 @@ export default function Home() {
                 </div>
                 <CardTitle className="text-xl font-bold mb-3">Global Network</CardTitle>
                 <CardDescription className="text-base leading-relaxed">
-                  전 세계 <span className="text-primary font-medium">50개국 크리에이터</span>들과
+                  전 세계 <span className="text-primary font-medium">각국의 크리에이터</span>들과
                   연결하고 글로벌 마켓에서
                   수익을 창출하세요.
                 </CardDescription>
@@ -265,8 +265,7 @@ export default function Home() {
                 <CardTitle className="text-xl font-bold mb-3">Smart Monetization</CardTitle>
                 <CardDescription className="text-base leading-relaxed">
                   AI 기반 <span className="text-primary font-medium">수익 최적화</span> 알고리즘으로
-                  콘텐츠 가치를 극대화하고
-                  안정적인 수입을 보장합니다.
+                  콘텐츠 가치를 극대화하고 안정적인 수입을 보장합니다.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -357,7 +356,7 @@ export default function Home() {
               <span className="font-medium text-sm tracking-wide">JOIN THE REVOLUTION</span>
             </div>
 
-            <h2 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight leading-[0.9]">
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tight leading-[0.9]">
               <span className="text-foreground">당신의 AI 여정,</span>
               <br />
               <span className="gradient-text">지금 시작하세요</span>
@@ -365,7 +364,7 @@ export default function Home() {
 
             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-light">
               이미 <span className="text-primary font-semibold">10,000명 이상의 크리에이터</span>가
-              AIrize에서 AI 콘텐츠로 수익을 창출하고 있습니다.
+              AI 콘텐츠로 수익을 창출하고 있습니다.
               <br className="hidden md:block" />
               <span className="text-foreground font-medium">당신도 그 일원이 되어보세요.</span>
             </p>
