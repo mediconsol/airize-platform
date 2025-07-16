@@ -149,7 +149,7 @@ export default function Home() {
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-[0.9] tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-bold mb-8 leading-[0.9] tracking-tight">
               <span className="block text-foreground">AI 콘텐츠의</span>
               <span className="block gradient-text">새로운 차원</span>
             </h1>
