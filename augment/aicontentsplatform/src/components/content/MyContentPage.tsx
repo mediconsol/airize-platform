@@ -372,28 +372,30 @@ export default function MyContentPage() {
                           creatorImage={user.profileImage}
                           isCreator={true}
                         />
-                        
-                        {/* 관리 버튼 오버레이 */}
-                        <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="flex gap-1">
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              className="h-8 w-8 p-0 bg-white/90 hover:bg-white shadow-md"
-                              onClick={() => setEditingContent(content)}
-                              title="편집"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              className="h-8 w-8 p-0 bg-red-500/90 hover:bg-red-500 shadow-md"
-                              onClick={() => setDeletingContent(content)}
-                              title="삭제"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+
+                        {/* 썸네일 영역 내 관리 버튼 오버레이 */}
+                        <div className="absolute top-0 left-0 w-full aspect-video rounded-t-lg overflow-hidden pointer-events-none">
+                          <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto">
+                            <div className="flex gap-1">
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                className="h-8 w-8 p-0 bg-white/90 hover:bg-white shadow-md"
+                                onClick={() => setEditingContent(content)}
+                                title="편집"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                className="h-8 w-8 p-0 bg-red-500/90 hover:bg-red-500 shadow-md"
+                                onClick={() => setDeletingContent(content)}
+                                title="삭제"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
 
